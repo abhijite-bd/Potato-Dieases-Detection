@@ -15,4 +15,9 @@ class Prediction extends Model
     protected $casts = [
         'probabilities' => 'array'
     ];
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

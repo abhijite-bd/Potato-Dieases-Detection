@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Prediction;
+use App\Models\Cure;
 use App\Services\PythonInferenceService;
 
 class PredictionController extends Controller
@@ -33,7 +34,14 @@ class PredictionController extends Controller
             'probabilities' => $result['probabilities']
         ]);
 
-        return view('result', compact('prediction'));
+        $cure = null;
+        $predictedClass = $result['prediction'];
+        $probability = $result['probabilities'][$predictedClass] * 100;
+        $cures = Cure::where('type', $predictedClass)
+            ->where('percentage', '<=', $probability)
+            ->get();
+        // dd($predictedClass);
+        return view('result', compact('prediction', 'cures'));
     }
 
     public function history()
